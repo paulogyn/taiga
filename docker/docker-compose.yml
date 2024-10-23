@@ -37,7 +37,7 @@ x-environment:
 
 services:
   taiga-back:
-    image: taigaio/backend:alpha
+    image: taigaio/back:alpha
     command: "init-and-serve"
     environment: *default-back-environment
     volumes:
@@ -57,7 +57,7 @@ services:
       retries: 5
 
   taiga-worker:
-    image: taigaio/backend:alpha
+    image: taigaio/back:alpha
     command: "tasksqueue worker -n main -c 4"
     environment: *default-back-environment
     volumes:
@@ -98,7 +98,7 @@ services:
       - taiga
 
   taiga-front:
-    image: taigaio/frontend:alpha
+    image: taigaio/front:alpha
     environment:
       TAIGA_BACKEND_URL: "${TAIGA_BACKEND_URL}"
       TAIGA_EVENTS_URL: "${TAIGA_EVENTS_URL}"
