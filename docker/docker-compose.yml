@@ -3,7 +3,7 @@ version: '3.9'
 services:
   taiga-back:
     image: taigaio/taiga-back:latest
-    command: init-and-serve
+    command: /usr/local/bin/gunicorn -w 4 -b 0.0.0.0:8000 taiga.wsgi:application
     environment:
       TAIGA_LANG: ${TAIGA_LANG}
       TAIGA_SECRET_KEY: ${TAIGA_SECRET_KEY}
@@ -35,11 +35,18 @@ services:
     volumes:
       - taiga-static-data:/taiga/static
       - taiga-media-data:/taiga/media
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000 || exit 1"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
     networks:
       - taiga
     depends_on:
-      taiga-db:
-        condition: service_healthy
+            taiga-db:
+        condition: service_started
       taiga-redis:
         condition: service_healthy
 
@@ -87,8 +94,8 @@ services:
       - taiga-static-data:/taiga/static
       - taiga-media-data:/taiga/media
     depends_on:
-      taiga-back:
-        condition: service_healthy
+            taiga-back:
+        condition: service_started
 
   taiga-worker:
     image: taigaio/taiga-back:latest
@@ -99,11 +106,12 @@ services:
       TAIGA_DB_NAME: ${TAIGA_DB_NAME}
       TAIGA_DB_USER: ${TAIGA_DB_USER}
       TAIGA_DB_PASSWORD: ${TAIGA_DB_PASSWORD}
+    restart: always
     networks:
       - taiga
     depends_on:
-      taiga-db:
-        condition: service_healthy
+            taiga-db:
+        condition: service_started
       taiga-redis:
         condition: service_healthy
 
