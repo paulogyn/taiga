@@ -18,28 +18,28 @@ services:
         condition: service_healthy
 
   taiga-db:
-    image: postgres:15
+    image: postgres:14
     environment:
       POSTGRES_DB: ${TAIGA_DB_NAME}
       POSTGRES_USER: ${TAIGA_DB_USER}
       POSTGRES_PASSWORD: ${TAIGA_DB_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${TAIGA_DB_USER}"]
-      interval: 2s
-      timeout: 15s
-      retries: 5
+      interval: 1s
+      timeout: 14s
+      retries: 4
     volumes:
       - taiga-db-data:/var/lib/postgresql/data
     networks:
       - taiga
 
   taiga-redis:
-    image: redis:7
+    image: redis:6
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 2s
-      timeout: 15s
-      retries: 5
+      interval: 1s
+      timeout: 14s
+      retries: 4
     networks:
       - taiga
 
@@ -51,7 +51,7 @@ services:
     networks:
       - taiga
     ports:
-      - 9000:80
+      - 8999:80
     volumes:
       - taiga-static-data:/taiga/static
       - taiga-media-data:/taiga/media
