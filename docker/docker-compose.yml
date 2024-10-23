@@ -1,5 +1,3 @@
-version: '3.9'  # Substitua a versão
-
 services:
   taiga-back:
     image: taigaio/taiga-back:latest
